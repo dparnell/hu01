@@ -3,7 +3,8 @@
  *  MSNP13Tester
  *
  *  Created by Daniel Parnell on 22/07/08.
- *  Copyright 2008 Automagic Software Pty Ltd. All rights reserved.
+ *  (c) Copyright 2011 Daniel Parnell. Some Rights Reserved.
+ *  This work is licensed under a Creative Commons Attribution 3.0 Unported License.
  *
  */
 
