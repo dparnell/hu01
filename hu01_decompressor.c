@@ -620,7 +620,7 @@ static int decompress_hu01_block(const unsigned char* source_ptr, const unsigned
 			eax = GET_INT16(source, 0);
 			source += 2;
 			
-			if (eax>0x10e) {
+			if (eax>=0x10e) {
 				goto L_1B9E6;
 			}
 			
@@ -637,14 +637,14 @@ static int decompress_hu01_block(const unsigned char* source_ptr, const unsigned
 		esi_ptr = destination + edx;
 		eax = eax + 3;
 		edi_ptr = destination + eax;
-		if(esi_ptr<source_ptr) {
-			printf("esi_ptr<source_ptr\n");
+		if(esi_ptr<destination_ptr) {
+			printf("esi_ptr<destination_ptr\n");
 			goto L_1B966;
 		}
 		
-		if(edi_ptr>=end_of_destination) {
-			goto L_1BE42;
-		}
+//		if(edi_ptr>=end_of_destination) {
+//			goto L_1BE42;
+//		}
 		
 //		memcpy(destination, esi_ptr, eax);
 		for (i=0; i<eax; i++) {
