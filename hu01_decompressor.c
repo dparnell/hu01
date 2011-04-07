@@ -775,32 +775,39 @@ int decompress_hu01_data(const unsigned char* hu01_buffer, int hu01_buffer_size,
 #endif
 						
 						pos += block_header_size;
-						
-                        int result = build_decompression_table(pos, &table[0]);
 						hu01_buffer_size -= block_header_size;
-                        
-						if(!result) {
-                            printf("ERROR: %d\n", result);
-							return HU_BAD_COMPRESSION_TABLE;
-						} else {
-							const unsigned char* block_end_pos = pos+block_size;
-							unsigned char* block_end_dest = dest+block_decompressed_size;
-#ifdef DEBUG_HEADER
-                            printf("TABLE SUCCESS:\n");
-#endif							
-							pos += 256;
-							
-							if(decompress_hu01_block(pos, block_end_pos, &table[0], dest, block_end_dest)==0) {
-								return HU_BLOCK_DECOMPRESS_FAILED;
-							}
+						
+						if(block_decompressed_size == block_size && block_size < 2048) {
+							// the block is not compressed, just copy the data in this block to the destination buffer
+							memcpy(dest, pos, block_size);
+							pos = pos + block_size;
+							dest = dest + block_size;
 							hu01_buffer_size -= block_size;
-							to_decompress -= block_decompressed_size;
+							to_decompress -= block_size;
+						} else {
+	                        int result = build_decompression_table(pos, &table[0]);
+                        
+							if(!result) {
+	                            printf("ERROR: %d\n", result);
+								return HU_BAD_COMPRESSION_TABLE;
+							} else {
+								const unsigned char* block_end_pos = pos+block_size;
+								unsigned char* block_end_dest = dest+block_decompressed_size;
+	#ifdef DEBUG_HEADER
+	                            printf("TABLE SUCCESS:\n");
+	#endif							
+								pos += 256;
 							
-							pos = block_end_pos;
-							dest = block_end_dest;
+								if(decompress_hu01_block(pos, block_end_pos, &table[0], dest, block_end_dest)==0) {
+									return HU_BLOCK_DECOMPRESS_FAILED;
+								}
+								hu01_buffer_size -= block_size;
+								to_decompress -= block_decompressed_size;
+							
+								pos = block_end_pos;
+								dest = block_end_dest;
+							}
 						}
-												  
-//						break;  // just for now
 					}
 				} else {
 					return HU_BAD_HEADER_SIZE;
